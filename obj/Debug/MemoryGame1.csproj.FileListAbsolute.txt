@@ -1,0 +1,6 @@
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\bin\MemoryGame1.dll.config
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\bin\MemoryGame1.dll
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\bin\MemoryGame1.pdb
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\obj\Debug\MemoryGame1.csprojResolveAssemblyReference.cache
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\obj\Debug\MemoryGame1.dll
+c:\users\st_zsh\documents\visual studio 2013\Projects\MemoryGame1\MemoryGame1\obj\Debug\MemoryGame1.pdb

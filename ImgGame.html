@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>图像记忆力训练</title>
+    <script src="jquery-1.11.3.min.js"></script>
+    <script src="universal.js"></script>
+    <script type="text/javascript">
+        var existPostion = [];
+        var xssj = "";
+        var id;//定时器id
+        $(function () {
+            //创建一个15*10的表格
+            var row;
+            xssj = getUrlVar("interval");
+            for (var i = 0; i < 10; i++) {
+                row = document.createElement("tr"); //就是创建行
+                var cell;
+                for (var j = 0; j < 15; j++) {
+                    cell = document.createElement("td"); //就是创建列
+                    cell.innerHTML = '<img name="' + (j + 1).toString() + (i + 1).toString() + '" src=""  alt="" />';
+                    row.appendChild(cell); //就是将每一列（一个小格）加到行中
+                }
+                document.getElementById("box").appendChild(row); //就是讲每一行添加到tbody中
+            }
+            nextLevel(1);
+        });
+        function getSquare() {
+            var x = event.clientX;
+            var y = event.clientY;
+            var rownumber = Math.ceil(x / 64);
+            var colnumber = Math.ceil(y / 64);
+            var position = rownumber.toString() + colnumber.toString();
+            if (existPostion.indexOf(position) > -1) {
+                if (position == existPostion[existPostion.length - 1]) {
+                    if (existPostion.length < 150) {
+                        nextLevel(existPostion.length + 1);
+                    }
+                    else {
+                        alert("恭喜你通关，你已成为记忆达人!");
+                    }
+                }
+                else {
+                    $("img[name='" + existPostion[existPostion.length - 1] + "']")[0].style.backgroundColor = "red";
+                    setTimeout(function () {
+                        //insertMysql(existPostion.length);
+                        var r = confirm("很遗憾!是否重新开始?");
+                        if (r == true) {
+                            location.href = "GameJumpPage.html?game=1&interval=" + xssj;;
+                        }
+                        else {
+
+                        }
+                    }, 1000);
+                }
+            }
+        }
+        function insertMysql(i) {
+            $.ajax({
+                url: "http://localhost:5007/api/Basic/insertGuanQia",
+                async: true,
+                data: {
+                    level: i,
+                    user: navigator.userAgent
+                },
+                success: function (data) {
+
+                },
+                error: function (a, b, c) {
+                    $.messager.show({
+                        title: '我的消息',
+                        msg: '消息将在5秒后关闭。',
+                        timeout: 5000,
+                        showType: 'slide'
+                    });
+                }
+            });
+        }
+        function nextLevel(index) {
+            if (id) {
+                clearInterval(id);
+            }
+            showDiv(index);
+            setRandomImg();
+        }
+        function setRandomImg() {
+            var x = Math.floor(Math.random() * 15 + 1);
+            var y = Math.floor(Math.random() * 10 + 1);
+            var position = x.toString() + y.toString();
+            if (existPostion.indexOf(position) < 0) {
+                existPostion.push(position);
+                var img = Math.floor(Math.random() * 52 + 1);
+                $("img[name='" + position + "']")[0].src = "images/" + img + ".png";
+            }
+            else {
+                setRandomImg();
+            }
+        }
+        function showDiv(i) {
+            $("#gq").html("第" + i + "关");
+            document.getElementById('bg').style.display = 'block';
+            setTimeout(function () {
+                closeDiv();
+                if (!isNaN(xssj) && parseInt(xssj) > 0) {
+                    var i = xssj;
+                    $("#ts").html("倒计时" + i + "秒");
+                    id = setInterval(function () {
+                        i--;
+                        if (i <= 0) {
+                            clearInterval(id);
+                            $("#ts").html("倒计时" + i + "秒");
+                            alert("很遗憾!时间到了!请重新开始!");
+                            location.href = "GameJumpPage.html?game=1&interval=" + xssj;
+                        }
+                        else {
+                            $("#ts").html("倒计时" + i + "秒");
+                        }
+                    }, 1000);
+                }
+            }, 500);
+        }
+
+        function closeDiv() {
+            document.getElementById('bg').style.display = 'none';
+        }
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 64px;
+            height: 64px;
+            background: gray;
+            position: relative;
+        }
+
+        img {
+            width: 64px;
+            height: 64px;
+            border: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .bg {
+            background-color: #ffffff;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0; /*FF IE7*/
+            filter: alpha(opacity=1); /*IE*/
+            opacity: 1; /*FF*/
+            z-index: 1000;
+            position: fixed !important; /*FF IE7*/
+            position: absolute; /*IE6*/
+            _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : /*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+        }
+    </style>
+</head>
+<body>
+    <table id="box" style="width:960px;height:640px;padding:0px;margin:0px;" border="0" cellspacing="0" cellpadding="0" onclick="getSquare()"></table>
+    <div><label id="ts" style="margin-top: 20px; position: absolute; left: 435px; font-size: 18px; "></label></div>
+    <div id="bg" class="bg" style="display:none;">
+        <div id="gq" style="position: absolute; top: 44%; left: 45%; color: red; font-size: x-large; "></div>
+    </div>
+</body>
+</html>

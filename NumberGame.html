@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>数字记忆力训练</title>
+    <script src="jquery-1.11.3.min.js"></script>
+    <script src="universal.js"></script>
+    <script type="text/javascript">
+        var existPostion = [];
+        var guanqia = 1;
+        var xssj = "";
+        var id;//定时器id
+        var clickflag = false;//允许点击标志位
+        $(function () {
+            document.getElementById("rememberOK").onmouseover = function () {
+                this.style.top = parseInt(this.style.top) + 3 + "px";
+                this.style.left = parseInt(this.style.left) + 3 + "px";
+                //this.style.background = "blue";
+                this.style.cursor = "pointer";
+            }
+            document.getElementById("rememberOK").onmouseout = function () {
+                this.style.top = parseInt(this.style.top) - 3 + "px";
+                this.style.left = parseInt(this.style.left) - 3 + "px";
+                //this.style.background = "#00ff00";
+                this.style.cursor = "hand";
+            }
+            //创建一个12*6的表格
+            var row;
+            xssj = getUrlVar("interval");
+            for (var i = 0; i < 6; i++) {
+                row = document.createElement("tr"); //就是创建行
+                var cell;
+                for (var j = 0; j < 12; j++) {
+                    cell = document.createElement("td"); //就是创建列
+                    cell.innerHTML = '<div class="numberSquare" name="' + (j + 1).toString() + (i + 1).toString() + '" src=""  alt="" />';
+                    row.appendChild(cell); //就是将每一列（一个小格）加到行中
+                }
+                document.getElementById("box").appendChild(row); //就是讲每一行添加到tbody中
+            }
+            nextLevel(guanqia);
+        });
+        function setNumber() {
+            if (clickflag) {
+                var x = event.clientX;
+                var y = event.clientY;
+                var rownumber = Math.ceil(x / 64);
+                var colnumber = Math.ceil(y / 64);
+                var position = rownumber.toString() + colnumber.toString();
+                if (existPostion.indexOf(position) > -1) {
+                    if (position == existPostion[0]) {
+                        existPostion.splice(0, 1);
+                        $("div[name='" + position + "']")[0].innerHTML = guanqia - existPostion.length;
+                        if (existPostion.length == 0) {
+                            if (guanqia == 72) {
+                                alert("恭喜你通关，你已成为记忆达人!");
+                            }
+                            else {
+                                setTimeout(function () {
+                                    nextLevel(++guanqia);
+                                }, 500);
+                            }
+                        }
+                    }
+                    else {
+                        $("div[name='" + existPostion[existPostion.length - 1] + "']")[0].style.backgroundColor = "red";
+                        setTimeout(function () {
+                            var r = confirm("很遗憾!是否重新开始?");
+                            if (r == true) {
+                                location.href = "GameJumpPage.html?game=2&interval=" + xssj;
+                            }
+                            else {
+
+                            }
+                        }, 1000);
+                    }
+                }
+            }
+        }
+        function nextLevel(index) {
+            //关闭定时器
+            if (id) {
+                clearInterval(id);
+            }
+            //清空位置数组
+            existPostion = [];
+            //使可以点击标志位为flase，并显示出按钮
+            clickflag = false;
+            document.getElementById('rememberOK').style.display = 'block';
+            //恢复整个游戏table为初始化
+            $(".numberSquare").css("background", "");
+            $(".numberSquare").html("");
+            showDiv(index);
+            setRandomNumbers(index);
+        }
+        function setRandomNumbers(index) {
+            for (var i = 1; i <= guanqia; i++) {
+                var position = getPosition();
+                existPostion.push(position);
+                $("div[name='" + position + "']")[0].style.background = "#fab27b"
+                $("div[name='" + position + "']")[0].innerHTML = i;
+            }
+        }
+        function getPosition() {
+            var x = Math.floor(Math.random() * 12 + 1);
+            var y = Math.floor(Math.random() * 6 + 1);
+            var position = x.toString() + y.toString();
+            if (existPostion.indexOf(position) < 0) {
+                return position;
+            }
+            else {
+                return getPosition();
+            }
+        }
+        function showDiv(i) {
+            $("#gq").html("第" + i + "关");
+            document.getElementById('bg').style.display = 'block';
+            setTimeout(function () {
+                closeDiv();
+                if (!isNaN(xssj) && parseInt(xssj) > 0) {
+                    var i = xssj;
+                    $("#ts").html("倒计时" + i + "秒");
+                    id = setInterval(function () {
+                        i--;
+                        if (i <= 0) {
+                            clearInterval(id);
+                            $("#ts").html("倒计时" + i + "秒");
+                            alert("很遗憾!时间到了!请重新开始!");
+                            location.href = "GameJumpPage.html?game=2&interval=" + xssj;
+                        }
+                        else {
+                            $("#ts").html("倒计时" + i + "秒");
+                        }
+                    }, 1000);
+                }
+            }, 500);
+        }
+        function closeDiv() {
+            document.getElementById('bg').style.display = 'none';
+        }
+        function remeberOK() {
+            //清除定时器和提示文字
+            if (id) {
+                clearInterval(id);
+            }
+            document.getElementById('rememberOK').style.display = 'none';
+            $("#ts").html("");
+            //清除数字
+            for (var i = 0; i < existPostion.length; i++) {
+                $("div[name='" + existPostion[i] + "']")[0].innerHTML = ""
+            }
+            startClickNumber();//开始游戏
+        }
+        function startClickNumber() {
+            clickflag = true;
+        }
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 64px;
+            height: 64px;
+            background: gray;
+            position: relative;
+        }
+
+        .numberSquare {
+            width: 64px;
+            height: 64px;
+            border: 1px solid white;
+            position: absolute;
+            left: 0;
+            top: 0;
+            text-align: center;
+            line-height: 64px;
+            font-size: 28px;
+            color:white
+        }
+
+        .bg {
+            background-color: #ffffff;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0; /*FF IE7*/
+            filter: alpha(opacity=1); /*IE*/
+            opacity: 1; /*FF*/
+            z-index: 1000;
+            position: fixed !important; /*FF IE7*/
+            position: absolute; /*IE6*/
+            _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : /*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+        }
+    </style>
+</head>
+<body>
+    <table id="box" style="width:768px;height:384px;padding:0px;margin:0px;" border="0" cellspacing="0" cellpadding="0" onclick="setNumber()"></table>
+    <div><button id="rememberOK" onclick="remeberOK()" style="margin-top: 5px; color: white; border: 3px solid green; width: 200px; background-color: #826858; font-size: 24px; position: absolute; left: 290px; ">记好了</button>
+        <div><label id="ts" style="margin-top: 45px; position: absolute; left: 347px; font-size: 18px; "></label></div></div>
+    <div id="bg" class="bg" style="display:none;">
+        <div id="gq" style="position: absolute; top: 44%; left: 45%; color: red; font-size: x-large; "></div>
+    </div>
+</body>
+</html>

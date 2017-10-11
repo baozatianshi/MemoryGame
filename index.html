@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script type="text/javascript">
+        window.onload = function () {
+            for (var i = 0; i < document.getElementsByTagName("div").length; i++) {
+                document.getElementsByTagName("div")[i].onclick = function () {
+                    location.href = "GameJumpPage.html?game=" + this.getAttribute("data-game");
+                }
+                document.getElementsByTagName("div")[i].onmouseover = function () {
+                    this.style.top = parseInt(this.style.top) + 5 + "px";
+                    this.style.left = parseInt(this.style.left) + 5 + "px";
+                    this.style.background = "blue";
+                    this.style.cursor = "pointer";
+                }
+                document.getElementsByTagName("div")[i].onmouseout = function () {
+                    this.style.top = parseInt(this.style.top) - 5 + "px";
+                    this.style.left = parseInt(this.style.left) - 5 + "px";
+                    this.style.background = "#00ff00";
+                    this.style.cursor = "hand";
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        div {
+            font-size: 42px;
+            width: 200px;
+            height: 200px;
+            background-color: #00ff00;
+            color: white;
+            margin-left: 30px;
+            margin-top: 50px;
+            text-align: center;
+            line-height: 200px;
+            position:absolute;
+        }
+    </style>
+</head>
+<body>
+    <div data-game="1" style="left:0px;top:0px">图形空间</div>
+    <div data-game="2" style="left:230px;top:0px">数字空间</div>
+</body>
+</html>

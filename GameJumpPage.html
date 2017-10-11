@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>记忆力训练</title>
+    <script src="universal.js"></script>
+    <script type="text/javascript">
+        var game;
+        var gameAddres = ["ImgGame", "NumberGame"]; //游戏地址字符串
+        var gameIntroduce = ["规则:找出并点击新出现的图标<br/>训练图标树:52", "规则:记好数字的位置后，按数字由小到大点击"];//游戏介绍字符串
+        window.onload = function () {
+            game = getUrlVar("game");
+            if (!game) {
+                game = 1;
+            }
+            var xssj = getUrlVar("interval");
+            if (xssj) {
+                document.getElementById("ndxz").value = xssj;
+            }
+            document.getElementById("introduce").innerHTML = gameIntroduce[game - 1];
+        }
+        function jumpToMainPage() {
+            var jumpPage = gameAddres[game - 1];
+            var xs = document.getElementById("ndxz").options[document.getElementById("ndxz").selectedIndex].value;
+            location.href = jumpPage + ".html?interval=" + xs;
+        }
+        function returnToIndex() {
+            location.href = "index.html";
+        }
+    </script>
+</head>
+<body style="background-color:gray">
+    <select id="ndxz">
+        <option value="0">不限时</option>
+        <option value="3">3秒</option>
+        <option value="5">5秒</option>
+        <option value="8">8秒</option>
+        <option value="10">10秒</option>
+    </select>
+    <div>
+        <button style="background-color:white;font-size:20px;color:red" onclick="jumpToMainPage()">开始</button>
+        <button style="margin-left: 10px; background-color: white; font-size: 20px; color: red" onclick="returnToIndex()">返回</button>
+    </div>
+    <div id="introduce" style="color:red"></div>
+</body>
+</html>
