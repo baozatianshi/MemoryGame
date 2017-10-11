@@ -9,3 +9,4 @@ E:\MyProjects\MemoryGame\bin\MemoryGame1.dll
 E:\MyProjects\MemoryGame\bin\MemoryGame1.pdb
 E:\MyProjects\MemoryGame\obj\Debug\MemoryGame1.dll
 E:\MyProjects\MemoryGame\obj\Debug\MemoryGame1.pdb
+E:\MyProjects\MemoryGame\obj\Debug\MemoryGame.csprojResolveAssemblyReference.cache
